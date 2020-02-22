@@ -1,0 +1,29 @@
+{
+  "name": "cracking-the-code-interview-tester",
+  "version": "1.0.0",
+  "description": "Loads your test cases against one of your question's solution",
+  "main": "main.js",
+  "scripts": {
+    "cli": "babel-node main.js"
+  },
+  "keywords": [
+    "test",
+    "case",
+    "loader",
+    "es6",
+    "babel",
+    "babel-node",
+    "cli",
+    "cracking the code interview"
+  ],
+  "author": "J.P. Zambrano",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "line-reader": "^0.4.0",
+    "rx-lite": "^4.0.8"
+  }
+}
