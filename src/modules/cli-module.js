@@ -1,7 +1,8 @@
 import { Observable } from 'rx-lite'
+
 import fileLoader from './file-loader'
 import topics from '../topics/topics'
-import testCases from './test-cases';
+import TestCaseParser from './test-case-parser'
 
 let _started = false
 
@@ -25,33 +26,52 @@ let _askQuestion = () => {
                 _askQuestion()
             }
 
-            topics.setCurrentTopic(answer)
             _handleInputFile(answer)
         }
     )
 }
 
 let _handleInputFile = (topic) => {
+    const topicTestCases = {}
+
     let source = Observable.create((observer) => {
         fileLoader.loadInputFile({
             observer: observer,
-            topic: topic
+            topic: topic,
         })
     })
     source.subscribe(
-        (line) => {
-            testCases.parseLine(line)
+        (nextLine) => {
+            const { questionNumber, testCase } = TestCaseParser.parseLine(nextLine) || {}
+
+            if (questionNumber && testCase) {
+                _handleNewTestCase({
+                    topicTestCases,
+                    questionNumber,
+                    testCase,
+                })
+            }
         },
         (error) => {
             console.log(error)
         },
         () => {
             //_filePrompt.pause()
-            console.log("--completed!")
+            console.log("--completed!", JSON.stringify(topicTestCases))
+            // run test cases (based on given topic and questions)
+
+            // .. wait for test cases to run and then ask again
             _askQuestion()
-            // need to resume when test cases are loaded
         }
     )
+}
+
+const _handleNewTestCase = ({ topicTestCases, questionNumber, testCase }) => {
+    if (!(questionNumber in topicTestCases)) {
+        topicTestCases[questionNumber] = []
+    }
+
+    topicTestCases[questionNumber].push(testCase)
 }
 
 export default {
@@ -59,6 +79,7 @@ export default {
         if (_started === false) {
             _askQuestion()
         }
-        return _started
+
+        _started = true
     }
 }
