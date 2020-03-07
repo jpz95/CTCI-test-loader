@@ -19,7 +19,12 @@ let _askQuestion = () => {
                 return _filePrompt.close()
             }
 
-            if (!topics.isTopic(answer)) {
+            const isTopicNumber = Number.isInteger(parseInt(answer))
+            if (topics.isTopic(answer) && isTopicNumber) {
+                // User gave topic number, instead of topic name
+                answer = topics.toTopicString(answer)
+
+            } else if (!topics.isTopic(answer)) {
                 // Let user try again
                 // TODO alert mistake to user in CLI
                 _filePrompt.write("not a topic " + answer + "\n")
@@ -53,7 +58,12 @@ let _handleInputFile = (topic) => {
             }
         },
         (error) => {
-            console.log(error)
+            console.warn(`Failed to load test cases for ${topic}.
+                Try again!`
+            )
+
+            console.log()
+            _askQuestion()
         },
         () => {
             //_filePrompt.pause()
