@@ -16,6 +16,7 @@ let _askQuestion = () => {
         'Which topic\'s input file would you like to load? ',
         (answer) => {
             if (answer.toLowerCase() === 'exit') {
+                // TODO need to kill process as well
                 return _filePrompt.close()
             }
 
